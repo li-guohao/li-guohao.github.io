@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guohao Li | AI & Quant Researcher</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Cursor Trail Effect -->
+    <div class="cursor-trail"></div>
+    
+    <!-- Background Particles -->
+    <div id="particles-js"></div>
+    
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading">
+        <div class="loader">
+            <div class="loader-ring"></div>
+            <div class="loader-text">INITIALIZING...</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-logo">
+                <span class="logo-bracket">&lt;</span>
+                <span class="logo-text">LH</span>
+                <span class="logo-bracket">/&gt;</span>
+            </a>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-greeting">
+                <span class="greeting-text">Hello, World! 👋</span>
+                <span class="greeting-line"></span>
+            </div>
+            <h1 class="hero-title">
+                I'm <span class="highlight">Guohao Li</span>
+            </h1>
+            <div class="hero-subtitle">
+                <span class="typing-text"></span>
+                <span class="cursor-blink">|</span>
+            </div>
+            <p class="hero-description">
+                Exploring the intersection of causal inference and quantitative finance.<br>
+                Using AI to reshape the future of investment decisions.
+            </p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">
+                    <span>View Projects</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#contact" class="btn btn-secondary">
+                    <span>Contact Me</span>
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+            <div class="hero-social">
+                <a href="https://github.com/li-guohao" target="_blank" class="social-link">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://linkedin.com/in/li-guohao" target="_blank" class="social-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="mailto:li-guohao@example.com" class="social-link">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="code-window">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="code-title">developer.py</div>
+                </div>
+                <div class="code-content">
+                    <pre><code><span class="code-purple">class</span> <span class="code-yellow">QuantResearcher</span>:
+    <span class="code-purple">def</span> <span class="code-blue">__init__</span>(self):
+        self.name = <span class="code-green">"Guohao Li"</span>
+        self.role = [<span class="code-green">"AI Engineer"</span>, <span class="code-green">"Quant Researcher"</span>]
+        self.focus = <span class="code-green">"Causal Inference"</span>
+        self.passion = <span class="code-green">"Innovation"</span>
+    
+    <span class="code-purple">def</span> <span class="code-blue">analyze</span>(self, data):
+        <span class="code-purple">return</span> self.discover_causes(data)
+    
+    <span class="code-purple">def</span> <span class="code-blue">innovate</span>(self):
+        <span class="code-purple">return</span> <span class="code-green">"Creating the future"</span>
+
+me = QuantResearcher()
+me.analyze(market_data)</code></pre>
+                </div>
+            </div>
+            <div class="floating-cards">
+                <div class="floating-card card-1">
+                    <i class="fas fa-brain"></i>
+                    <span>AI/ML</span>
+                </div>
+                <div class="floating-card card-2">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Quant</span>
+                </div>
+                <div class="floating-card card-3">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Causal</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="section-number">01.</span>
+                About Me
+            </h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="about-content">
+            <div class="about-image">
+                <div class="image-frame">
+                    <div class="avatar-placeholder">
+                        <i class="fas fa-user-astronaut"></i>
+                    </div>
+                    <div class="frame-corner tl"></div>
+                    <div class="frame-corner tr"></div>
+                    <div class="frame-corner bl"></div>
+                    <div class="frame-corner br"></div>
+                </div>
+                <div class="experience-badge">
+                    <span class="exp-number">5+</span>
+                    <span class="exp-text">Years of Research</span>
+                </div>
+            </div>
+            <div class="about-text">
+                <h3>AI & Quantitative Finance Researcher</h3>
+                <p>
+                    I am an innovator passionate about exploring the intersection of 
+                    <strong>artificial intelligence</strong> and <strong>quantitative finance</strong>.
+                    My work focuses on <strong>causal inference</strong> in financial markets,
+                    dedicated to revealing WHY markets move, not just THAT they move.
+                </p>
+                <p>
+                    By combining machine learning techniques with econometrics, I develop 
+                    innovative methods and tools to help investors make smarter decisions.
+                    <strong>CAUSAL_FINANCE</strong> is my flagship project in this domain.
+                </p>
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="10">0</span>
+                        <span class="stat-label">Projects</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="200">0</span>
+                        <span class="stat-label">Contributions</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="150">0</span>
+                        <span class="stat-label">Stars</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="section-number">02.</span>
+                Featured Project
+            </h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="projects-grid">
+            <!-- CAUSAL_FINANCE Project -->
+            <div class="project-card featured">
+                <div class="project-badge">Featured</div>
+                <div class="project-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <h3 class="project-title">CAUSAL_FINANCE</h3>
+                <p class="project-description">
+                    A cutting-edge project combining causal inference with quantitative finance.
+                    Explore market causality for more precise investment strategies and risk management.
+                </p>
+                <div class="project-tech">
+                    <span>Python</span>
+                    <span>PyTorch</span>
+                    <span>Causal ML</span>
+                    <span>Econometrics</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/li-guohao/CAUSAL_FINANCE" target="_blank" class="project-link">
+                        <i class="fab fa-github"></i>
+                        <span>View Code</span>
+                    </a>
+                    <a href="#" class="project-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Demo</span>
+                    </a>
+                </div>
+                <div class="project-stats">
+                    <span><i class="fas fa-star"></i> 128</span>
+                    <span><i class="fas fa-code-branch"></i> 32</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="section-number">03.</span>
+                Skills
+            </h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="skills-content">
+            <div class="skills-category">
+                <h3><i class="fas fa-code"></i> Programming Languages</h3>
+                <div class="skill-items">
+                    <div class="skill-item" data-skill="90">
+                        <span class="skill-name">Python</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">90%</span>
+                    </div>
+                    <div class="skill-item" data-skill="75">
+                        <span class="skill-name">R</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">75%</span>
+                    </div>
+                    <div class="skill-item" data-skill="70">
+                        <span class="skill-name">SQL</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">70%</span>
+                    </div>
+                    <div class="skill-item" data-skill="65">
+                        <span class="skill-name">JavaScript</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">65%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="skills-category">
+                <h3><i class="fas fa-brain"></i> AI & Machine Learning</h3>
+                <div class="skill-items">
+                    <div class="skill-item" data-skill="85">
+                        <span class="skill-name">PyTorch</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">85%</span>
+                    </div>
+                    <div class="skill-item" data-skill="80">
+                        <span class="skill-name">TensorFlow</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">80%</span>
+                    </div>
+                    <div class="skill-item" data-skill="88">
+                        <span class="skill-name">Scikit-learn</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">88%</span>
+                    </div>
+                    <div class="skill-item" data-skill="92">
+                        <span class="skill-name">Causal Inference</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">92%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="skills-category">
+                <h3><i class="fas fa-chart-line"></i> Quantitative Finance</h3>
+                <div class="skill-items">
+                    <div class="skill-item" data-skill="90">
+                        <span class="skill-name">Financial Modeling</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">90%</span>
+                    </div>
+                    <div class="skill-item" data-skill="85">
+                        <span class="skill-name">Time Series Analysis</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">85%</span>
+                    </div>
+                    <div class="skill-item" data-skill="88">
+                        <span class="skill-name">Risk Management</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">88%</span>
+                    </div>
+                    <div class="skill-item" data-skill="75">
+                        <span class="skill-name">Asset Pricing</span>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                        <span class="skill-percent">75%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="skills-category">
+                <h3><i class="fas fa-tools"></i> Tools & Platforms</h3>
+                <div class="skills-tags">
+                    <span class="tag">Git</span>
+                    <span class="tag">Docker</span>
+                    <span class="tag">Linux</span>
+                    <span class="tag">AWS</span>
+                    <span class="tag">Jupyter</span>
+                    <span class="tag">VS Code</span>
+                    <span class="tag">LaTeX</span>
+                    <span class="tag">Jira</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="section-number">04.</span>
+                Get In Touch
+            </h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="contact-content">
+            <div class="contact-info">
+                <h3>Let's Innovate Together!</h3>
+                <p>
+                    Whether it's research collaboration, project development, or tech discussion,
+                    I'd love to connect with you.
+                </p>
+                <div class="contact-methods">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Email</h4>
+                            <p>li-guohao@example.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Location</h4>
+                            <p>Global · Remote</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Response Time</h4>
+                            <p>Within 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form-container">
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" required>
+                        <label for="name">Your Name</label>
+                        <div class="input-border"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" required>
+                        <label for="email">Your Email</label>
+                        <div class="input-border"></div>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                        <label for="message">Your Message</label>
+                        <div class="input-border"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        <span>Send Message</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-bracket">&lt;</span>
+                <span class="logo-text">LH</span>
+                <span class="logo-bracket">/&gt;</span>
+            </div>
+            <p class="footer-text">
+                Building the future with code, understanding the world with data.
+            </p>
+            <div class="footer-social">
+                <a href="https://github.com/li-guohao" target="_blank" class="social-link">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://linkedin.com/in/li-guohao" target="_blank" class="social-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-medium"></i>
+                </a>
+            </div>
+            <p class="footer-copyright">
+                © 2026 Guohao Li. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <a href="#home" class="back-to-top" id="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
