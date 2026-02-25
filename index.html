@@ -3,128 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Ecosystem Sandbox - 神经网络生态系统沙盒</title>
+    <title>Math Sandbox - 数学可视化沙盒</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="app">
         <!-- 顶部标题 -->
         <header class="header">
-            <h1>🧬 AI Ecosystem Sandbox</h1>
-            <p>神经网络驱动的进化生态系统</p>
+            <h1>🧮 Math Sandbox</h1>
+            <p>数学可视化探索沙盒 - 函数、分形、几何</p>
         </header>
 
         <!-- 主界面 -->
         <div class="main-container">
             <!-- 左侧控制面板 -->
             <aside class="control-panel">
+                <!-- 模式选择 -->
                 <div class="panel-section">
-                    <h3>📊 生态系统统计</h3>
-                    <div class="stats">
-                        <div class="stat-item">
-                            <span class="stat-label">生物数量:</span>
-                            <span id="creature-count" class="stat-value">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">植物数量:</span>
-                            <span id="plant-count" class="stat-value">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">世代:</span>
-                            <span id="generation-count" class="stat-value">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">最高适应度:</span>
-                            <span id="best-fitness" class="stat-value">0</span>
-                        </div>
+                    <h3>📐 模式选择</h3>
+                    <div class="mode-buttons">
+                        <button class="btn-mode active" data-mode="function2d">2D 函数</button>
+                        <button class="btn-mode" data-mode="function3d">3D 函数</button>
+                        <button class="btn-mode" data-mode="fractal">分形</button>
+                        <button class="btn-mode" data-mode="parametric">参数方程</button>
+                        <button class="btn-mode" data-mode="vector">向量场</button>
                     </div>
                 </div>
 
+                <!-- 公式输入 -->
                 <div class="panel-section">
-                    <h3>🎮 控制</h3>
-                    <div class="controls">
-                        <button id="btn-start" class="btn btn-primary">▶ 开始</button>
-                        <button id="btn-pause" class="btn btn-secondary">⏸ 暂停</button>
-                        <button id="btn-reset" class="btn btn-danger">↺ 重置</button>
+                    <h3>📝 公式输入</h3>
+                    <div class="formula-inputs" id="formula-container">
+                        <!-- 动态生成 -->
                     </div>
-                    <div class="view-toggle">
-                        <label>视图模式:</label>
-                        <button id="btn-2d" class="btn btn-mode active">2D</button>
-                        <button id="btn-3d" class="btn btn-mode">3D ⭐</button>
-                    </div>
-                    <div class="speed-control">
-                        <label for="sim-speed">模拟速度:</label>
-                        <input type="range" id="sim-speed" min="1" max="10" value="1">
-                        <span id="speed-value">1x</span>
+                    <button id="btn-plot" class="btn btn-primary">📊 绘制</button>
+                    <button id="btn-clear" class="btn btn-secondary">🗑️ 清除</button>
+                </div>
+
+                <!-- 预设函数 -->
+                <div class="panel-section">
+                    <h3>📚 预设</h3>
+                    <div class="presets" id="presets-container">
+                        <!-- 动态生成 -->
                     </div>
                 </div>
 
+                <!-- 参数设置 -->
                 <div class="panel-section">
-                    <h3>⚙️ 参数设置</h3>
-                    <div class="param-group">
-                        <label for="initial-creatures">初始生物数:</label>
-                        <input type="number" id="initial-creatures" value="20" min="5" max="100">
-                    </div>
-                    <div class="param-group">
-                        <label for="mutation-rate">变异率:</label>
-                        <input type="range" id="mutation-rate" min="1" max="50" value="10">
-                        <span id="mutation-value">10%</span>
-                    </div>
-                    <div class="param-group">
-                        <label for="food-spawn-rate">食物生成率:</label>
-                        <input type="range" id="food-spawn-rate" min="1" max="20" value="5">
-                        <span id="food-value">5</span>
-                    </div>
-                    <div class="param-group">
-                        <label for="predator-ratio">捕食者比例:</label>
-                        <input type="range" id="predator-ratio" min="0" max="30" value="10">
-                        <span id="predator-value">10%</span>
+                    <h3>⚙️ 参数</h3>
+                    <div class="params" id="params-container">
+                        <!-- 动态生成 -->
                     </div>
                 </div>
 
+                <!-- 帮助提示 -->
                 <div class="panel-section">
-                    <h3>🧠 选中生物</h3>
-                    <div id="selected-creature-info" class="creature-info">
-                        <p class="hint">点击生物查看详情</p>
+                    <h3>💡 可用函数</h3>
+                    <div class="help-text">
+                        <code>sin(x), cos(x), tan(x)</code><br>
+                        <code>exp(x), log(x), sqrt(x)</code><br>
+                        <code>pow(x, 2), abs(x)</code><br>
+                        <code>PI, E</code><br>
+                        <code>noise(x, y), gaussian(x)</code>
                     </div>
-                    <canvas id="brain-viz" width="200" height="150"></canvas>
                 </div>
             </aside>
 
-            <!-- 中间模拟区域 -->
+            <!-- 中间绘图区域 -->
             <main class="simulation-area">
-                <canvas id="world-canvas"></canvas>
+                <canvas id="canvas-2d"></canvas>
+                <div id="canvas-3d-container" style="display: none;"></div>
+                
+                <!-- 坐标信息 -->
+                <div class="coordinate-info" id="coord-info">
+                    x: 0, y: 0
+                </div>
+                
+                <!-- 图例 -->
                 <div class="overlay-info">
                     <div class="legend">
                         <div class="legend-item">
-                            <span class="legend-color herbivore"></span>
-                            <span>草食动物 (绿色)</span>
+                            <span class="legend-key">🖱️ 拖拽</span>
+                            <span>平移</span>
                         </div>
                         <div class="legend-item">
-                            <span class="legend-color predator"></span>
-                            <span>捕食者 (红色)</span>
+                            <span class="legend-key">🔍 滚轮</span>
+                            <span>缩放</span>
                         </div>
                         <div class="legend-item">
-                            <span class="legend-color plant"></span>
-                            <span>植物 (青色)</span>
+                            <span class="legend-key">⌨️ 双击</span>
+                            <span>重置视图</span>
                         </div>
                     </div>
                 </div>
             </main>
 
-            <!-- 右侧图表 -->
-            <aside class="charts-panel">
-                <div class="chart-container">
-                    <h4>种群历史</h4>
-                    <canvas id="population-chart" width="250" height="150"></canvas>
+            <!-- 右侧信息面板 -->
+            <aside class="info-panel">
+                <div class="panel-section">
+                    <h3>📊 当前视图</h3>
+                    <div class="view-info" id="view-info">
+                        <!-- 动态更新 -->
+                    </div>
                 </div>
-                <div class="chart-container">
-                    <h4>适应度进化</h4>
-                    <canvas id="fitness-chart" width="250" height="150"></canvas>
-                </div>
-                <div class="chart-container">
-                    <h4>物种分布</h4>
-                    <canvas id="species-chart" width="250" height="150"></canvas>
+                
+                <div class="panel-section">
+                    <h3>📈 函数列表</h3>
+                    <div class="function-list" id="function-list">
+                        <!-- 动态更新 -->
+                    </div>
                 </div>
             </aside>
         </div>
@@ -132,10 +119,9 @@
         <!-- 底部说明 -->
         <footer class="footer">
             <p>
-                💡 <strong>操作说明:</strong> 
-                鼠标拖拽移动视角 | 滚轮缩放 | 点击生物查看神经网络 | 
-                生物通过神经网络学习觅食、逃避、繁殖 |
-                <a href="https://github.com/YOUR_USERNAME/ai-ecosystem-sandbox" target="_blank">GitHub Repo</a>
+                🧮 <strong>Math Sandbox</strong> - 
+                支持 2D/3D 函数绘图、分形可视化、参数方程、向量场 |
+                <a href="https://github.com/li-guohao/li-guohao.github.io" target="_blank">GitHub</a>
             </p>
         </footer>
     </div>
@@ -144,13 +130,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     
-    <!-- 加载JavaScript -->
-    <script src="js/neuralnet.js"></script>
-    <script src="js/creature.js"></script>
-    <script src="js/ecosystem.js"></script>
-    <script src="js/renderer.js"></script>
-    <script src="js/3d/renderer3d.js"></script>
-    <script src="js/charts.js"></script>
-    <script src="js/main.js"></script>
+    <!-- Math Sandbox Scripts -->
+    <script src="js/math/engine.js"></script>
+    <script src="js/math/plotter.js"></script>
+    <script src="js/math/fractals.js"></script>
+    <script src="js/math/renderer3d.js"></script>
+    <script src="js/math/main.js"></script>
 </body>
 </html>
