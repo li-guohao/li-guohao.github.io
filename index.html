@@ -3,138 +3,587 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Sandbox - 数学可视化沙盒</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>GitHub项目探索助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+        }
+    </style>
 </head>
-<body>
-    <div id="app">
-        <!-- 顶部标题 -->
-        <header class="header">
-            <h1>🧮 Math Sandbox</h1>
-            <p>数学可视化探索沙盒 - 函数、分形、几何</p>
-        </header>
-
-        <!-- 主界面 -->
-        <div class="main-container">
-            <!-- 左侧控制面板 -->
-            <aside class="control-panel">
-                <!-- 模式选择 -->
-                <div class="panel-section">
-                    <h3>📐 模式选择</h3>
-                    <div class="mode-buttons">
-                        <button class="btn-mode active" data-mode="function2d">2D 函数</button>
-                        <button class="btn-mode" data-mode="function3d">3D 函数</button>
-                        <button class="btn-mode" data-mode="fractal">分形</button>
-                        <button class="btn-mode" data-mode="parametric">参数方程</button>
-                        <button class="btn-mode" data-mode="vector">向量场</button>
-                    </div>
-                </div>
-
-                <!-- 公式输入 -->
-                <div class="panel-section">
-                    <h3>📝 公式输入</h3>
-                    <div class="formula-inputs" id="formula-container">
-                        <!-- 动态生成 -->
-                    </div>
-                    <button id="btn-plot" class="btn btn-primary">📊 绘制</button>
-                    <button id="btn-clear" class="btn btn-secondary">🗑️ 清除</button>
-                </div>
-
-                <!-- 预设函数 -->
-                <div class="panel-section">
-                    <h3>📚 预设</h3>
-                    <div class="presets" id="presets-container">
-                        <!-- 动态生成 -->
-                    </div>
-                </div>
-
-                <!-- 参数设置 -->
-                <div class="panel-section">
-                    <h3>⚙️ 参数</h3>
-                    <div class="params" id="params-container">
-                        <!-- 动态生成 -->
-                    </div>
-                </div>
-
-                <!-- 帮助提示 -->
-                <div class="panel-section">
-                    <h3>💡 可用函数</h3>
-                    <div class="help-text">
-                        <code>sin(x), cos(x), tan(x)</code><br>
-                        <code>exp(x), log(x), sqrt(x)</code><br>
-                        <code>pow(x, 2), abs(x)</code><br>
-                        <code>PI, E</code><br>
-                        <code>noise(x, y), gaussian(x)</code>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- 中间绘图区域 -->
-            <main class="simulation-area">
-                <canvas id="canvas-2d"></canvas>
-                <div id="canvas-3d-container" style="display: none;"></div>
-                
-                <!-- 坐标信息 -->
-                <div class="coordinate-info" id="coord-info">
-                    x: 0, y: 0
-                </div>
-                
-                <!-- 图例 -->
-                <div class="overlay-info">
-                    <div class="legend">
-                        <div class="legend-item">
-                            <span class="legend-key">🖱️ 拖拽</span>
-                            <span>平移</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-key">🔍 滚轮</span>
-                            <span>缩放</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-key">⌨️ 双击</span>
-                            <span>重置视图</span>
-                        </div>
-                    </div>
-                </div>
-            </main>
-
-            <!-- 右侧信息面板 -->
-            <aside class="info-panel">
-                <div class="panel-section">
-                    <h3>📊 当前视图</h3>
-                    <div class="view-info" id="view-info">
-                        <!-- 动态更新 -->
-                    </div>
-                </div>
-                
-                <div class="panel-section">
-                    <h3>📈 函数列表</h3>
-                    <div class="function-list" id="function-list">
-                        <!-- 动态更新 -->
-                    </div>
-                </div>
-            </aside>
+<body class="bg-gray-50 font-sans">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md fixed w-full z-10">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-github text-2xl text-gray-800"></i>
+                <span class="text-xl font-bold text-gray-800">GitHub项目探索助手</span>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#scorer" class="text-gray-600 hover:text-primary font-medium">项目难度评估</a>
+                <a href="#discovery" class="text-gray-600 hover:text-primary font-medium">项目发现</a>
+                <a href="#pr-generator" class="text-gray-600 hover:text-primary font-medium">PR生成器</a>
+            </div>
+            <button class="md:hidden text-gray-600" id="mobile-menu-button">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
         </div>
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="#scorer" class="text-gray-600 hover:text-primary font-medium py-2">项目难度评估</a>
+                <a href="#discovery" class="text-gray-600 hover:text-primary font-medium py-2">项目发现</a>
+                <a href="#pr-generator" class="text-gray-600 hover:text-primary font-medium py-2">PR生成器</a>
+            </div>
+        </div>
+    </nav>
 
-        <!-- 底部说明 -->
-        <footer class="footer">
-            <p>
-                🧮 <strong>Math Sandbox</strong> - 
-                支持 2D/3D 函数绘图、分形可视化、参数方程、向量场 |
-                <a href="https://github.com/li-guohao/li-guohao.github.io" target="_blank">GitHub</a>
-            </p>
-        </footer>
-    </div>
+    <!-- 英雄区 -->
+    <header class="pt-24 pb-16 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 text-shadow">GitHub项目探索助手</h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">从浏览项目到动手贡献的桥梁，帮助你找到适合自己的开源项目</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#scorer" class="bg-white text-primary font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
+                    开始评估
+                </a>
+                <a href="#discovery" class="bg-transparent border-2 border-white text-white font-bold py-3 px-6 rounded-lg hover:bg-white hover:text-primary transition duration-300">
+                    发现项目
+                </a>
+            </div>
+        </div>
+    </header>
 
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    
-    <!-- Math Sandbox Scripts -->
-    <script src="js/math/engine.js"></script>
-    <script src="js/math/plotter.js"></script>
-    <script src="js/math/fractals.js"></script>
-    <script src="js/math/renderer3d.js"></script>
-    <script src="js/math/main.js"></script>
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 py-12">
+        <!-- 项目难度评估 -->
+        <section id="scorer" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">「我能做吗？」评分器</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">输入GitHub项目URL，我们会分析项目难度并给出个性化建议</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+                <form id="scorer-form" class="space-y-6">
+                    <div>
+                        <label for="repo-url" class="block text-gray-700 font-medium mb-2">GitHub项目URL</label>
+                        <input type="url" id="repo-url" placeholder="例如：https://github.com/octocat/Hello-World" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">你的技能水平</label>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="skill-level" value="beginner" checked class="form-radio text-primary">
+                                <span>初学者</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="skill-level" value="intermediate" class="form-radio text-primary">
+                                <span>中级</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="skill-level" value="advanced" class="form-radio text-primary">
+                                <span>高级</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition duration-300">
+                        分析项目
+                    </button>
+                </form>
+                
+                <div id="scorer-result" class="mt-8 hidden">
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">分析结果</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="text-lg font-medium text-gray-700 mb-2">难度评分</h4>
+                                <div class="flex items-center">
+                                    <span id="difficulty-score" class="text-3xl font-bold text-primary mr-2">0</span>
+                                    <span id="difficulty-level" class="text-gray-600">未知</span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="text-lg font-medium text-gray-700 mb-2">技术栈</h4>
+                                <div id="tech-stack" class="flex flex-wrap gap-2">
+                                    <!-- 技术栈标签将在这里动态生成 -->
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="text-lg font-medium text-gray-700 mb-2">适合度</h4>
+                                <div class="flex items-center">
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div id="fitness-bar" class="bg-success h-2.5 rounded-full" style="width: 0%"></div>
+                                    </div>
+                                    <span id="fitness-percentage" class="ml-2 text-gray-600">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h4 class="text-lg font-medium text-gray-700 mb-2">详细分析</h4>
+                            <div id="detailed-analysis" class="text-gray-600 space-y-2">
+                                <!-- 详细分析将在这里动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h4 class="text-lg font-medium text-gray-700 mb-2">建议</h4>
+                            <div id="recommendations" class="text-gray-600 space-y-2">
+                                <!-- 建议将在这里动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 项目发现 -->
+        <section id="discovery" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">「从简单到复杂」项目发现</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">按难度级别和技术栈发现适合你的开源项目</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                    <div class="flex-1">
+                        <label for="language" class="block text-gray-700 font-medium mb-2">编程语言</label>
+                        <select id="language" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="all">所有语言</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                            <option value="go">Go</option>
+                            <option value="rust">Rust</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label for="difficulty" class="block text-gray-700 font-medium mb-2">难度级别</label>
+                        <select id="difficulty" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="all">所有难度</option>
+                            <option value="easy">简单</option>
+                            <option value="medium">中等</option>
+                            <option value="hard">困难</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button id="search-projects" class="bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition duration-300 w-full md:w-auto">
+                            搜索项目
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 项目卡片将在这里动态生成 -->
+                    <div class="col-span-full text-center py-12 text-gray-500">
+                        <i class="fa fa-search text-4xl mb-4"></i>
+                        <p>请选择语言和难度级别，然后点击搜索项目</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PR生成器 -->
+        <section id="pr-generator" class="mb-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">「我的第一个PR」生成器</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">分析项目的good first issue，生成个性化的PR模板和步骤指南</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+                <form id="pr-form" class="space-y-6">
+                    <div>
+                        <label for="pr-repo-url" class="block text-gray-700 font-medium mb-2">GitHub项目URL</label>
+                        <input type="url" id="pr-repo-url" placeholder="例如：https://github.com/octocat/Hello-World" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition duration-300">
+                        分析项目并生成PR模板
+                    </button>
+                </form>
+                
+                <div id="pr-result" class="mt-8 hidden">
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">PR生成结果</h3>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-lg font-medium text-gray-700 mb-2">找到的Good First Issue</h4>
+                            <div id="issues-list" class="space-y-4">
+                                <!-- Issues将在这里动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-lg font-medium text-gray-700 mb-2">PR模板</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <pre id="pr-template" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-lg font-medium text-gray-700 mb-2">贡献步骤</h4>
+                            <ol id="contribution-steps" class="list-decimal list-inside space-y-2 text-gray-600">
+                                <!-- 步骤将在这里动态生成 -->
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa fa-github text-2xl"></i>
+                        <span class="text-xl font-bold">GitHub项目探索助手</span>
+                    </div>
+                    <p class="mt-2 text-gray-400">从浏览项目到动手贡献的桥梁</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#scorer" class="text-gray-400 hover:text-white transition duration-300">项目难度评估</a>
+                    <a href="#discovery" class="text-gray-400 hover:text-white transition duration-300">项目发现</a>
+                    <a href="#pr-generator" class="text-gray-400 hover:text-white transition duration-300">PR生成器</a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+                <p>© 2026 GitHub项目探索助手 | 托管在 GitHub Pages</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    // 关闭移动端菜单
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                }
+            });
+        });
+
+        // 项目难度评估表单
+        document.getElementById('scorer-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const repoUrl = document.getElementById('repo-url').value;
+            const skillLevel = document.querySelector('input[name="skill-level"]:checked').value;
+            
+            // 显示加载状态
+            const form = this;
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = '分析中...';
+            submitButton.disabled = true;
+            
+            // 模拟API调用
+            setTimeout(() => {
+                // 恢复按钮状态
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+                
+                // 显示结果
+                document.getElementById('scorer-result').classList.remove('hidden');
+                
+                // 填充模拟数据
+                document.getElementById('difficulty-score').textContent = '75';
+                document.getElementById('difficulty-level').textContent = '中等';
+                
+                // 技术栈
+                const techStack = document.getElementById('tech-stack');
+                techStack.innerHTML = '';
+                ['JavaScript', 'React', 'Node.js', 'CSS'].forEach(tech => {
+                    const tag = document.createElement('span');
+                    tag.className = 'bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded';
+                    tag.textContent = tech;
+                    techStack.appendChild(tag);
+                });
+                
+                // 适合度
+                document.getElementById('fitness-bar').style.width = '65%';
+                document.getElementById('fitness-percentage').textContent = '65%';
+                
+                // 详细分析
+                const detailedAnalysis = document.getElementById('detailed-analysis');
+                detailedAnalysis.innerHTML = '';
+                [
+                    '代码复杂度：中等',
+                    'issue数量：24个（其中3个good first issue）',
+                    '最近更新：2天前',
+                    '维护者响应速度：快',
+                    '文档完善度：良好'
+                ].forEach(item => {
+                    const p = document.createElement('p');
+                    p.textContent = item;
+                    detailedAnalysis.appendChild(p);
+                });
+                
+                // 建议
+                const recommendations = document.getElementById('recommendations');
+                recommendations.innerHTML = '';
+                [
+                    '建议从项目的good first issue开始贡献',
+                    '先熟悉项目的文档和代码结构',
+                    '可以尝试修复一些简单的bug或改进文档',
+                    '加入项目的社区交流渠道，寻求帮助'
+                ].forEach(item => {
+                    const p = document.createElement('p');
+                    p.textContent = item;
+                    recommendations.appendChild(p);
+                });
+            }, 1500);
+        });
+
+        // 项目搜索
+        document.getElementById('search-projects').addEventListener('click', function() {
+            const language = document.getElementById('language').value;
+            const difficulty = document.getElementById('difficulty').value;
+            
+            // 显示加载状态
+            const button = this;
+            const originalText = button.textContent;
+            button.textContent = '搜索中...';
+            button.disabled = true;
+            
+            // 模拟API调用
+            setTimeout(() => {
+                // 恢复按钮状态
+                button.textContent = originalText;
+                button.disabled = false;
+                
+                // 显示结果
+                const projectsContainer = document.getElementById('projects-container');
+                projectsContainer.innerHTML = '';
+                
+                // 模拟项目数据
+                const projects = [
+                    {
+                        name: 'Hello World',
+                        owner: 'octocat',
+                        description: 'This your first repo!',
+                        stars: 10000,
+                        forks: 5000,
+                        language: 'JavaScript',
+                        difficulty: 'easy',
+                        url: 'https://github.com/octocat/Hello-World'
+                    },
+                    {
+                        name: 'vue',
+                        owner: 'vuejs',
+                        description: '🖖 Vue.js is a progressive, incrementally-adoptable JavaScript framework for building UI on the web.',
+                        stars: 200000,
+                        forks: 30000,
+                        language: 'JavaScript',
+                        difficulty: 'medium',
+                        url: 'https://github.com/vuejs/vue'
+                    },
+                    {
+                        name: 'tensorflow',
+                        owner: 'tensorflow',
+                        description: 'An Open Source Machine Learning Framework for Everyone',
+                        stars: 180000,
+                        forks: 80000,
+                        language: 'Python',
+                        difficulty: 'hard',
+                        url: 'https://github.com/tensorflow/tensorflow'
+                    }
+                ];
+                
+                // 过滤项目
+                const filteredProjects = projects.filter(project => {
+                    const matchesLanguage = language === 'all' || project.language.toLowerCase() === language.toLowerCase();
+                    const matchesDifficulty = difficulty === 'all' || project.difficulty === difficulty;
+                    return matchesLanguage && matchesDifficulty;
+                });
+                
+                if (filteredProjects.length === 0) {
+                    projectsContainer.innerHTML = `
+                        <div class="col-span-full text-center py-12 text-gray-500">
+                            <i class="fa fa-search text-4xl mb-4"></i>
+                            <p>未找到匹配的项目，请尝试其他筛选条件</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // 生成项目卡片
+                filteredProjects.forEach(project => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm card-hover';
+                    card.innerHTML = `
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-800 mb-1">${project.name}</h3>
+                                    <p class="text-gray-500 text-sm">${project.owner}</p>
+                                </div>
+                                <span class="bg-${project.difficulty === 'easy' ? 'green' : project.difficulty === 'medium' ? 'yellow' : 'red'}-100 text-${project.difficulty === 'easy' ? 'green' : project.difficulty === 'medium' ? 'yellow' : 'red'}-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                    ${project.difficulty === 'easy' ? '简单' : project.difficulty === 'medium' ? '中等' : '困难'}
+                                </span>
+                            </div>
+                            <p class="text-gray-600 mb-4">${project.description}</p>
+                            <div class="flex items-center space-x-4 mb-4">
+                                <span class="flex items-center text-gray-500 text-sm">
+                                    <i class="fa fa-star mr-1"></i> ${project.stars.toLocaleString()}
+                                </span>
+                                <span class="flex items-center text-gray-500 text-sm">
+                                    <i class="fa fa-code-fork mr-1"></i> ${project.forks.toLocaleString()}
+                                </span>
+                                <span class="flex items-center text-gray-500 text-sm">
+                                    <i class="fa fa-code mr-1"></i> ${project.language}
+                                </span>
+                            </div>
+                            <a href="${project.url}" target="_blank" class="inline-flex items-center text-primary hover:text-primary/80 font-medium">
+                                查看项目
+                                <i class="fa fa-external-link ml-1"></i>
+                            </a>
+                        </div>
+                    `;
+                    projectsContainer.appendChild(card);
+                });
+            }, 1500);
+        });
+
+        // PR生成器表单
+        document.getElementById('pr-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const repoUrl = document.getElementById('pr-repo-url').value;
+            
+            // 显示加载状态
+            const form = this;
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = '分析中...';
+            submitButton.disabled = true;
+            
+            // 模拟API调用
+            setTimeout(() => {
+                // 恢复按钮状态
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+                
+                // 显示结果
+                document.getElementById('pr-result').classList.remove('hidden');
+                
+                // 填充模拟数据
+                const issuesList = document.getElementById('issues-list');
+                issuesList.innerHTML = '';
+                [
+                    {
+                        title: 'Add documentation for new users',
+                        number: 123,
+                        url: 'https://github.com/octocat/Hello-World/issues/123'
+                    },
+                    {
+                        title: 'Fix typos in README.md',
+                        number: 124,
+                        url: 'https://github.com/octocat/Hello-World/issues/124'
+                    }
+                ].forEach(issue => {
+                    const issueElement = document.createElement('div');
+                    issueElement.className = 'bg-gray-50 p-4 rounded-lg';
+                    issueElement.innerHTML = `
+                        <h5 class="font-medium text-gray-800">${issue.title}</h5>
+                        <p class="text-gray-500 text-sm mt-1">Issue #${issue.number}</p>
+                        <a href="${issue.url}" target="_blank" class="text-primary text-sm mt-2 inline-block">查看详情</a>
+                    `;
+                    issuesList.appendChild(issueElement);
+                });
+                
+                // PR模板
+                document.getElementById('pr-template').textContent = `# Fix: ${'Add documentation for new users'}
+
+## Description
+
+This PR addresses issue #${123} by adding documentation for new users.
+
+## Changes Made
+
+- Added a new section in README.md for getting started
+- Created a CONTRIBUTING.md file with guidelines for contributors
+- Updated the documentation with clear instructions
+
+## Checklist
+
+- [x] I've read the contributing guidelines
+- [x] I've tested the changes
+- [x] I've added documentation
+
+## Related Issues
+
+- Closes #${123}`;
+                
+                // 贡献步骤
+                const contributionSteps = document.getElementById('contribution-steps');
+                contributionSteps.innerHTML = '';
+                [
+                    'Fork the repository',
+                    'Clone your fork to your local machine',
+                    'Create a new branch for your changes',
+                    'Make the necessary changes to fix the issue',
+                    'Commit your changes with a descriptive commit message',
+                    'Push your changes to your fork',
+                    'Create a pull request from your fork to the original repository',
+                    'Wait for the maintainers to review your PR'
+                ].forEach(step => {
+                    const li = document.createElement('li');
+                    li.textContent = step;
+                    contributionSteps.appendChild(li);
+                });
+            }, 1500);
+        });
+    </script>
 </body>
 </html>
