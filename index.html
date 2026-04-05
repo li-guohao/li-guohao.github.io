@@ -91,7 +91,7 @@
         <section id="scorer" class="mb-20">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-800 mb-4">「我能做吗？」评分器</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">输入GitHub项目URL，我们会分析项目难度并给出个性化建议</p>
+                <p class="text-gray-600 max-w-2xl mx-auto">输入GitHub项目URL，我们会分析项目难度并给出建议</p>
             </div>
             
             <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
@@ -100,24 +100,6 @@
                         <label for="repo-url" class="block text-gray-700 font-medium mb-2">GitHub项目URL</label>
                         <input type="url" id="repo-url" placeholder="例如：https://github.com/octocat/Hello-World" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-gray-700 font-medium mb-2">你的技能水平</label>
-                        <div class="flex space-x-4">
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="radio" name="skill-level" value="beginner" checked class="form-radio text-primary">
-                                <span>初学者</span>
-                            </label>
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="radio" name="skill-level" value="intermediate" class="form-radio text-primary">
-                                <span>中级</span>
-                            </label>
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="radio" name="skill-level" value="advanced" class="form-radio text-primary">
-                                <span>高级</span>
-                            </label>
-                        </div>
                     </div>
                     
                     <button type="submit" class="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition duration-300">
@@ -175,7 +157,7 @@
         <section id="discovery" class="mb-20">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-800 mb-4">「从简单到复杂」项目发现</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">按难度级别和技术栈发现适合你的开源项目</p>
+                <p class="text-gray-600 max-w-2xl mx-auto">按语言和难度发现适合你的开源项目</p>
             </div>
             
             <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
@@ -316,10 +298,9 @@
         });
 
         // 项目难度评估表单
-        document.getElementById('scorer-form').addEventListener('submit', function(e) {
+        document.getElementById('scorer-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const repoUrl = document.getElementById('repo-url').value;
-            const skillLevel = document.querySelector('input[name="skill-level"]:checked').value;
             
             // 显示加载状态
             const form = this;
@@ -328,8 +309,48 @@
             submitButton.textContent = '分析中...';
             submitButton.disabled = true;
             
-            // 模拟API调用
-            setTimeout(() => {
+            try {
+                // 从URL中提取owner和repo
+                const urlMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+                if (!urlMatch) {
+                    alert('请输入有效的GitHub项目URL');
+                    return;
+                }
+                const owner = urlMatch[1];
+                const repo = urlMatch[2];
+                
+                // 调用GitHub API获取仓库信息
+                const repoResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+                if (!repoResponse.ok) {
+                    throw new Error('无法获取仓库信息');
+                }
+                const repoData = await repoResponse.json();
+                
+                // 获取仓库的语言信息
+                const languagesResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/languages`);
+                const languagesData = await languagesResponse.json();
+                
+                // 计算难度评分
+                let difficultyScore = 0;
+                let difficultyLevel = '未知';
+                
+                // 基于多个因素计算难度
+                const starFactor = Math.min(repoData.stargazers_count / 1000, 10) * 3;
+                const forkFactor = Math.min(repoData.forks_count / 100, 10) * 2;
+                const sizeFactor = Math.min(repoData.size / 1000, 10) * 2;
+                const languageCount = Object.keys(languagesData).length;
+                const langFactor = Math.min(languageCount, 5) * 5;
+                
+                difficultyScore = Math.round(Math.min(starFactor + forkFactor + sizeFactor + langFactor, 100));
+                
+                if (difficultyScore < 30) {
+                    difficultyLevel = '简单';
+                } else if (difficultyScore < 70) {
+                    difficultyLevel = '中等';
+                } else {
+                    difficultyLevel = '困难';
+                }
+                
                 // 恢复按钮状态
                 submitButton.textContent = originalText;
                 submitButton.disabled = false;
@@ -337,33 +358,35 @@
                 // 显示结果
                 document.getElementById('scorer-result').classList.remove('hidden');
                 
-                // 填充模拟数据
-                document.getElementById('difficulty-score').textContent = '75';
-                document.getElementById('difficulty-level').textContent = '中等';
+                // 填充数据
+                document.getElementById('difficulty-score').textContent = difficultyScore;
+                document.getElementById('difficulty-level').textContent = difficultyLevel;
                 
                 // 技术栈
                 const techStack = document.getElementById('tech-stack');
                 techStack.innerHTML = '';
-                ['JavaScript', 'React', 'Node.js', 'CSS'].forEach(tech => {
+                Object.keys(languagesData).forEach(lang => {
                     const tag = document.createElement('span');
                     tag.className = 'bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded';
-                    tag.textContent = tech;
+                    tag.textContent = lang;
                     techStack.appendChild(tag);
                 });
                 
-                // 适合度
-                document.getElementById('fitness-bar').style.width = '65%';
-                document.getElementById('fitness-percentage').textContent = '65%';
+                // 适合度（简单项目适合度更高）
+                const fitness = 100 - difficultyScore;
+                document.getElementById('fitness-bar').style.width = fitness + '%';
+                document.getElementById('fitness-percentage').textContent = fitness + '%';
                 
                 // 详细分析
                 const detailedAnalysis = document.getElementById('detailed-analysis');
                 detailedAnalysis.innerHTML = '';
                 [
-                    '代码复杂度：中等',
-                    'issue数量：24个（其中3个good first issue）',
-                    '最近更新：2天前',
-                    '维护者响应速度：快',
-                    '文档完善度：良好'
+                    `星数：${repoData.stargazers_count.toLocaleString()}`,
+                    `Fork数：${repoData.forks_count.toLocaleString()}`,
+                    `代码大小：${(repoData.size / 1024).toFixed(2)} MB`,
+                    `语言数量：${languageCount}`,
+                    `最后更新：${new Date(repoData.updated_at).toLocaleDateString()}`,
+                    `开源协议：${repoData.license ? repoData.license.name : '未知'}`
                 ].forEach(item => {
                     const p = document.createElement('p');
                     p.textContent = item;
@@ -373,21 +396,38 @@
                 // 建议
                 const recommendations = document.getElementById('recommendations');
                 recommendations.innerHTML = '';
-                [
-                    '建议从项目的good first issue开始贡献',
-                    '先熟悉项目的文档和代码结构',
-                    '可以尝试修复一些简单的bug或改进文档',
-                    '加入项目的社区交流渠道，寻求帮助'
-                ].forEach(item => {
+                const recommendationsList = difficultyScore < 30 ? [
+                    '这个项目看起来比较简单，适合新手开始',
+                    '可以尝试查看项目的issue，寻找good first issue标签',
+                    '先阅读项目的README和CONTRIBUTING文件',
+                    '从修复小bug或改进文档开始'
+                ] : difficultyScore < 70 ? [
+                    '这个项目难度适中，有一定挑战',
+                    '建议先熟悉项目的代码结构',
+                    '寻找一些标记为good first issue或help wanted的问题',
+                    '可以在项目的Discussions中提问'
+                ] : [
+                    '这个项目比较复杂，需要一定的经验',
+                    '建议先从理解项目的整体架构开始',
+                    '可以先贡献一些文档或测试',
+                    '多和项目维护者交流，了解贡献指南'
+                ];
+                
+                recommendationsList.forEach(item => {
                     const p = document.createElement('p');
                     p.textContent = item;
                     recommendations.appendChild(p);
                 });
-            }, 1500);
+                
+            } catch (error) {
+                alert('分析失败：' + error.message);
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
         });
 
         // 项目搜索
-        document.getElementById('search-projects').addEventListener('click', function() {
+        document.getElementById('search-projects').addEventListener('click', async function() {
             const language = document.getElementById('language').value;
             const difficulty = document.getElementById('difficulty').value;
             
@@ -397,8 +437,31 @@
             button.textContent = '搜索中...';
             button.disabled = true;
             
-            // 模拟API调用
-            setTimeout(() => {
+            try {
+                // 构建搜索查询
+                let query = 'stars:>100';
+                if (language !== 'all') {
+                    query += ` language:${language}`;
+                }
+                
+                // 根据难度添加条件
+                if (difficulty === 'easy') {
+                    query += ' stars:100..5000 size:<10000';
+                } else if (difficulty === 'medium') {
+                    query += ' stars:5000..50000';
+                } else if (difficulty === 'hard') {
+                    query += ' stars:>50000';
+                }
+                
+                query += ' sort:stars';
+                
+                // 调用GitHub API搜索仓库
+                const response = await fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&per_page=9`);
+                if (!response.ok) {
+                    throw new Error('搜索失败');
+                }
+                const data = await response.json();
+                
                 // 恢复按钮状态
                 button.textContent = originalText;
                 button.disabled = false;
@@ -407,48 +470,7 @@
                 const projectsContainer = document.getElementById('projects-container');
                 projectsContainer.innerHTML = '';
                 
-                // 模拟项目数据
-                const projects = [
-                    {
-                        name: 'Hello World',
-                        owner: 'octocat',
-                        description: 'This your first repo!',
-                        stars: 10000,
-                        forks: 5000,
-                        language: 'JavaScript',
-                        difficulty: 'easy',
-                        url: 'https://github.com/octocat/Hello-World'
-                    },
-                    {
-                        name: 'vue',
-                        owner: 'vuejs',
-                        description: '🖖 Vue.js is a progressive, incrementally-adoptable JavaScript framework for building UI on the web.',
-                        stars: 200000,
-                        forks: 30000,
-                        language: 'JavaScript',
-                        difficulty: 'medium',
-                        url: 'https://github.com/vuejs/vue'
-                    },
-                    {
-                        name: 'tensorflow',
-                        owner: 'tensorflow',
-                        description: 'An Open Source Machine Learning Framework for Everyone',
-                        stars: 180000,
-                        forks: 80000,
-                        language: 'Python',
-                        difficulty: 'hard',
-                        url: 'https://github.com/tensorflow/tensorflow'
-                    }
-                ];
-                
-                // 过滤项目
-                const filteredProjects = projects.filter(project => {
-                    const matchesLanguage = language === 'all' || project.language.toLowerCase() === language.toLowerCase();
-                    const matchesDifficulty = difficulty === 'all' || project.difficulty === difficulty;
-                    return matchesLanguage && matchesDifficulty;
-                });
-                
-                if (filteredProjects.length === 0) {
+                if (data.items.length === 0) {
                     projectsContainer.innerHTML = `
                         <div class="col-span-full text-center py-12 text-gray-500">
                             <i class="fa fa-search text-4xl mb-4"></i>
@@ -459,45 +481,64 @@
                 }
                 
                 // 生成项目卡片
-                filteredProjects.forEach(project => {
+                data.items.forEach(repo => {
+                    // 估算难度
+                    let repoDifficulty = 'easy';
+                    if (repo.stargazers_count > 50000) {
+                        repoDifficulty = 'hard';
+                    } else if (repo.stargazers_count > 5000) {
+                        repoDifficulty = 'medium';
+                    }
+                    
                     const card = document.createElement('div');
                     card.className = 'bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm card-hover';
                     card.innerHTML = `
                         <div class="p-6">
                             <div class="flex justify-between items-start mb-4">
                                 <div>
-                                    <h3 class="text-lg font-bold text-gray-800 mb-1">${project.name}</h3>
-                                    <p class="text-gray-500 text-sm">${project.owner}</p>
+                                    <h3 class="text-lg font-bold text-gray-800 mb-1">${repo.name}</h3>
+                                    <p class="text-gray-500 text-sm">${repo.owner.login}</p>
                                 </div>
-                                <span class="bg-${project.difficulty === 'easy' ? 'green' : project.difficulty === 'medium' ? 'yellow' : 'red'}-100 text-${project.difficulty === 'easy' ? 'green' : project.difficulty === 'medium' ? 'yellow' : 'red'}-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                    ${project.difficulty === 'easy' ? '简单' : project.difficulty === 'medium' ? '中等' : '困难'}
+                                <span class="bg-${repoDifficulty === 'easy' ? 'green' : repoDifficulty === 'medium' ? 'yellow' : 'red'}-100 text-${repoDifficulty === 'easy' ? 'green' : repoDifficulty === 'medium' ? 'yellow' : 'red'}-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                    ${repoDifficulty === 'easy' ? '简单' : repoDifficulty === 'medium' ? '中等' : '困难'}
                                 </span>
                             </div>
-                            <p class="text-gray-600 mb-4">${project.description}</p>
+                            <p class="text-gray-600 mb-4">${repo.description || '暂无描述'}</p>
                             <div class="flex items-center space-x-4 mb-4">
                                 <span class="flex items-center text-gray-500 text-sm">
-                                    <i class="fa fa-star mr-1"></i> ${project.stars.toLocaleString()}
+                                    <i class="fa fa-star mr-1"></i> ${repo.stargazers_count.toLocaleString()}
                                 </span>
                                 <span class="flex items-center text-gray-500 text-sm">
-                                    <i class="fa fa-code-fork mr-1"></i> ${project.forks.toLocaleString()}
+                                    <i class="fa fa-code-fork mr-1"></i> ${repo.forks_count.toLocaleString()}
                                 </span>
                                 <span class="flex items-center text-gray-500 text-sm">
-                                    <i class="fa fa-code mr-1"></i> ${project.language}
+                                    <i class="fa fa-code mr-1"></i> ${repo.language || '多种语言'}
                                 </span>
                             </div>
-                            <a href="${project.url}" target="_blank" class="inline-flex items-center text-primary hover:text-primary/80 font-medium">
-                                查看项目
-                                <i class="fa fa-external-link ml-1"></i>
-                            </a>
+                            <div class="flex gap-2">
+                                <a href="${repo.html_url}" target="_blank" class="inline-flex items-center text-primary hover:text-primary/80 font-medium">
+                                    查看项目
+                                    <i class="fa fa-external-link ml-1"></i>
+                                </a>
+                                <a href="${repo.html_url}/contribute" target="_blank" class="inline-flex items-center text-gray-600 hover:text-gray-800 font-medium">
+                                    贡献
+                                    <i class="fa fa-hand-pointer-o ml-1"></i>
+                                </a>
+                            </div>
                         </div>
                     `;
                     projectsContainer.appendChild(card);
                 });
-            }, 1500);
+                
+            } catch (error) {
+                alert('搜索失败：' + error.message);
+                button.textContent = originalText;
+                button.disabled = false;
+            }
         });
 
         // PR生成器表单
-        document.getElementById('pr-form').addEventListener('submit', function(e) {
+        document.getElementById('pr-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const repoUrl = document.getElementById('pr-repo-url').value;
             
@@ -508,8 +549,23 @@
             submitButton.textContent = '分析中...';
             submitButton.disabled = true;
             
-            // 模拟API调用
-            setTimeout(() => {
+            try {
+                // 从URL中提取owner和repo
+                const urlMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+                if (!urlMatch) {
+                    alert('请输入有效的GitHub项目URL');
+                    return;
+                }
+                const owner = urlMatch[1];
+                const repo = urlMatch[2];
+                
+                // 搜索good first issue
+                const issuesResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?labels=good%20first%20issue&state=open&per_page=5`);
+                if (!issuesResponse.ok) {
+                    throw new Error('无法获取issue信息');
+                }
+                const issuesData = await issuesResponse.json();
+                
                 // 恢复按钮状态
                 submitButton.textContent = originalText;
                 submitButton.disabled = false;
@@ -517,72 +573,80 @@
                 // 显示结果
                 document.getElementById('pr-result').classList.remove('hidden');
                 
-                // 填充模拟数据
+                // 填充issues
                 const issuesList = document.getElementById('issues-list');
                 issuesList.innerHTML = '';
-                [
-                    {
-                        title: 'Add documentation for new users',
-                        number: 123,
-                        url: 'https://github.com/octocat/Hello-World/issues/123'
-                    },
-                    {
-                        title: 'Fix typos in README.md',
-                        number: 124,
-                        url: 'https://github.com/octocat/Hello-World/issues/124'
-                    }
-                ].forEach(issue => {
-                    const issueElement = document.createElement('div');
-                    issueElement.className = 'bg-gray-50 p-4 rounded-lg';
-                    issueElement.innerHTML = `
-                        <h5 class="font-medium text-gray-800">${issue.title}</h5>
-                        <p class="text-gray-500 text-sm mt-1">Issue #${issue.number}</p>
-                        <a href="${issue.url}" target="_blank" class="text-primary text-sm mt-2 inline-block">查看详情</a>
+                
+                if (issuesData.length === 0) {
+                    issuesList.innerHTML = `
+                        <div class="text-center py-6 text-gray-500">
+                            <i class="fa fa-info-circle text-2xl mb-2"></i>
+                            <p>该项目暂无标记为good first issue的开放issue</p>
+                            <p class="text-sm mt-2">你可以查看其他标签的issue，或先了解项目文档</p>
+                        </div>
                     `;
-                    issuesList.appendChild(issueElement);
-                });
+                } else {
+                    issuesData.forEach(issue => {
+                        const issueElement = document.createElement('div');
+                        issueElement.className = 'bg-gray-50 p-4 rounded-lg';
+                        issueElement.innerHTML = `
+                            <h5 class="font-medium text-gray-800">${issue.title}</h5>
+                            <p class="text-gray-500 text-sm mt-1">Issue #${issue.number} · ${new Date(issue.created_at).toLocaleDateString()}</p>
+                            <p class="text-gray-600 text-sm mt-2">${issue.body ? issue.body.substring(0, 150) + '...' : '暂无描述'}</p>
+                            <a href="${issue.html_url}" target="_blank" class="text-primary text-sm mt-2 inline-block">查看详情</a>
+                        `;
+                        issuesList.appendChild(issueElement);
+                    });
+                }
                 
                 // PR模板
-                document.getElementById('pr-template').textContent = `# Fix: ${'Add documentation for new users'}
+                const sampleIssue = issuesData[0] || { title: 'Fix a bug or add a feature', number: '1' };
+                document.getElementById('pr-template').textContent = `# ${sampleIssue.title ? 'Fix: ' + sampleIssue.title : 'Fix or Feature'}
 
 ## Description
 
-This PR addresses issue #${123} by adding documentation for new users.
+This PR addresses issue #${sampleIssue.number} by ${sampleIssue.title ? sampleIssue.title.toLowerCase() : 'implementing the desired functionality'}.
 
 ## Changes Made
 
-- Added a new section in README.md for getting started
-- Created a CONTRIBUTING.md file with guidelines for contributors
-- Updated the documentation with clear instructions
+- [Describe the main changes you made]
+- [List key files modified]
+- [Explain the approach taken]
 
 ## Checklist
 
-- [x] I've read the contributing guidelines
-- [x] I've tested the changes
-- [x] I've added documentation
+- [ ] I've read the contributing guidelines
+- [ ] I've tested the changes
+- [ ] I've added documentation if needed
+- [ ] All existing tests pass
 
 ## Related Issues
 
-- Closes #${123}`;
+${sampleIssue.number !== '1' ? `- Closes #${sampleIssue.number}` : '- [Link to related issue]'}`;
                 
                 // 贡献步骤
                 const contributionSteps = document.getElementById('contribution-steps');
                 contributionSteps.innerHTML = '';
                 [
-                    'Fork the repository',
+                    `Fork the repository: https://github.com/${owner}/${repo}/fork`,
                     'Clone your fork to your local machine',
                     'Create a new branch for your changes',
                     'Make the necessary changes to fix the issue',
                     'Commit your changes with a descriptive commit message',
                     'Push your changes to your fork',
-                    'Create a pull request from your fork to the original repository',
+                    `Create a pull request from your fork to ${owner}/${repo}`,
                     'Wait for the maintainers to review your PR'
                 ].forEach(step => {
                     const li = document.createElement('li');
                     li.textContent = step;
                     contributionSteps.appendChild(li);
                 });
-            }, 1500);
+                
+            } catch (error) {
+                alert('分析失败：' + error.message);
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
         });
     </script>
 </body>
