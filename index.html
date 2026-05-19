@@ -1,653 +1,232 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub项目探索助手</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#3b82f6',
-                        secondary: '#64748b',
-                        success: '#10b981',
-                        warning: '#f59e0b',
-                        danger: '#ef4444',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .content-auto {
-                content-visibility: auto;
-            }
-            .text-shadow {
-                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            .card-hover {
-                transition: all 0.3s ease;
-            }
-            .card-hover:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            }
-        }
-    </style>
-</head>
-<body class="bg-gray-50 font-sans">
-    <!-- 导航栏 -->
-    <nav class="bg-white shadow-md fixed w-full z-10">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <i class="fa fa-github text-2xl text-gray-800"></i>
-                <span class="text-xl font-bold text-gray-800">GitHub项目探索助手</span>
-            </div>
-            <div class="hidden md:flex space-x-6">
-                <a href="#scorer" class="text-gray-600 hover:text-primary font-medium">项目难度评估</a>
-                <a href="#discovery" class="text-gray-600 hover:text-primary font-medium">项目发现</a>
-                <a href="#pr-generator" class="text-gray-600 hover:text-primary font-medium">PR生成器</a>
-            </div>
-            <button class="md:hidden text-gray-600" id="mobile-menu-button">
-                <i class="fa fa-bars text-xl"></i>
-            </button>
-        </div>
-        <!-- 移动端菜单 -->
-        <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
-            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
-                <a href="#scorer" class="text-gray-600 hover:text-primary font-medium py-2">项目难度评估</a>
-                <a href="#discovery" class="text-gray-600 hover:text-primary font-medium py-2">项目发现</a>
-                <a href="#pr-generator" class="text-gray-600 hover:text-primary font-medium py-2">PR生成器</a>
-            </div>
-        </div>
-    </nav>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guohao Li | Applied AI Systems</title>
+    <meta
+      name="description"
+      content="Guohao Li builds applied AI systems, developer tools, and research code."
+    />
+    <meta name="theme-color" content="#0c0d0b" />
+    <meta property="og:title" content="Guohao Li | Applied AI Systems" />
+    <meta
+      property="og:description"
+      content="Applied AI systems, developer tools, and research code by Guohao Li."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://li-guohao.github.io/" />
+    <meta
+      property="og:image"
+      content="https://avatars.githubusercontent.com/u/148667951?v=4"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- 英雄区 -->
-    <header class="pt-24 pb-16 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6 text-shadow">GitHub项目探索助手</h1>
-            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">从浏览项目到动手贡献的桥梁，帮助你找到适合自己的开源项目</p>
-            <div class="flex flex-col md:flex-row justify-center gap-4">
-                <a href="#scorer" class="bg-white text-primary font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
-                    开始评估
-                </a>
-                <a href="#discovery" class="bg-transparent border-2 border-white text-white font-bold py-3 px-6 rounded-lg hover:bg-white hover:text-primary transition duration-300">
-                    发现项目
-                </a>
-            </div>
-        </div>
+    <header class="site-header" aria-label="Site header">
+      <a class="brand" href="#top" aria-label="Guohao Li home">
+        <span class="brand-mark">GL</span>
+        <span>Guohao Li</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#focus">Focus</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+      </nav>
     </header>
 
-    <!-- 主要内容 -->
-    <main class="container mx-auto px-4 py-12">
-        <!-- 项目难度评估 -->
-        <section id="scorer" class="mb-20">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">「我能做吗？」评分器</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">输入GitHub项目URL，我们会分析项目难度并给出建议</p>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
-                <form id="scorer-form" class="space-y-6">
-                    <div>
-                        <label for="repo-url" class="block text-gray-700 font-medium mb-2">GitHub项目URL</label>
-                        <input type="url" id="repo-url" placeholder="例如：https://github.com/octocat/Hello-World" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    
-                    <button type="submit" class="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition duration-300">
-                        分析项目
-                    </button>
-                </form>
-                
-                <div id="scorer-result" class="mt-8 hidden">
-                    <div class="border-t border-gray-200 pt-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">分析结果</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <h4 class="text-lg font-medium text-gray-700 mb-2">难度评分</h4>
-                                <div class="flex items-center">
-                                    <span id="difficulty-score" class="text-3xl font-bold text-primary mr-2">0</span>
-                                    <span id="difficulty-level" class="text-gray-600">未知</span>
-                                </div>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <h4 class="text-lg font-medium text-gray-700 mb-2">技术栈</h4>
-                                <div id="tech-stack" class="flex flex-wrap gap-2">
-                                    <!-- 技术栈标签将在这里动态生成 -->
-                                </div>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <h4 class="text-lg font-medium text-gray-700 mb-2">适合度</h4>
-                                <div class="flex items-center">
-                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div id="fitness-bar" class="bg-success h-2.5 rounded-full" style="width: 0%"></div>
-                                    </div>
-                                    <span id="fitness-percentage" class="ml-2 text-gray-600">0%</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-6">
-                            <h4 class="text-lg font-medium text-gray-700 mb-2">详细分析</h4>
-                            <div id="detailed-analysis" class="text-gray-600 space-y-2">
-                                <!-- 详细分析将在这里动态生成 -->
-                            </div>
-                        </div>
-                        
-                        <div class="mt-6">
-                            <h4 class="text-lg font-medium text-gray-700 mb-2">建议</h4>
-                            <div id="recommendations" class="text-gray-600 space-y-2">
-                                <!-- 建议将在这里动态生成 -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Founder @ DarkMentalAI - Shenzhen, China</p>
+          <h1 id="hero-title">Guohao Li</h1>
+          <p class="hero-lede">
+            Applied AI systems, developer tools, and research code with outputs
+            that are meant to be inspected, reused, and improved.
+          </p>
+          <div class="hero-actions" aria-label="Primary links">
+            <a class="button primary" href="https://github.com/li-guohao">GitHub</a>
+            <a class="button" href="mailto:guohaoli2000@gmail.com">Email</a>
+            <a class="button" href="https://www.linkedin.com/in/guohao-li">LinkedIn</a>
+          </div>
+        </div>
 
-        <!-- 项目发现 -->
-        <section id="discovery" class="mb-20">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">「从简单到复杂」项目发现</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">按语言和难度发现适合你的开源项目</p>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
-                <div class="flex flex-col md:flex-row gap-4 mb-6">
-                    <div class="flex-1">
-                        <label for="language" class="block text-gray-700 font-medium mb-2">编程语言</label>
-                        <select id="language" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            <option value="all">所有语言</option>
-                            <option value="javascript">JavaScript</option>
-                            <option value="python">Python</option>
-                            <option value="java">Java</option>
-                            <option value="cpp">C++</option>
-                            <option value="go">Go</option>
-                            <option value="rust">Rust</option>
-                        </select>
-                    </div>
-                    <div class="flex-1">
-                        <label for="difficulty" class="block text-gray-700 font-medium mb-2">难度级别</label>
-                        <select id="difficulty" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            <option value="all">所有难度</option>
-                            <option value="easy">简单</option>
-                            <option value="medium">中等</option>
-                            <option value="hard">困难</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button id="search-projects" class="bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition duration-300 w-full md:w-auto">
-                            搜索项目
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- 项目卡片将在这里动态生成 -->
-                    <div class="col-span-full text-center py-12 text-gray-500">
-                        <i class="fa fa-search text-4xl mb-4"></i>
-                        <p>请选择语言和难度级别，然后点击搜索项目</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <aside class="identity-panel" aria-label="Profile summary">
+          <div class="avatar-frame">
+            <img
+              src="https://avatars.githubusercontent.com/u/148667951?v=4"
+              alt="Guohao Li GitHub avatar"
+              width="168"
+              height="168"
+            />
+          </div>
+          <div class="terminal-card" aria-label="Current focus">
+            <p><span>$ whoami</span>Guohao Li</p>
+            <p><span>$ focus</span>applied-ai systems / developer tools / research code</p>
+            <p><span>$ status</span>shipping small systems with clear notes</p>
+          </div>
+        </aside>
+      </section>
 
-        <!-- PR生成器 -->
-        <section id="pr-generator" class="mb-12">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">「我的第一个PR」生成器</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">分析项目的good first issue，生成个性化的PR模板和步骤指南</p>
+      <section class="signal-band" aria-label="Profile signals">
+        <span>Applied AI Systems</span>
+        <span>Developer Tooling</span>
+        <span>Research Scaffolds</span>
+        <span>Technical Notes</span>
+      </section>
+
+      <section class="section" id="focus" aria-labelledby="focus-title">
+        <div class="section-heading">
+          <p class="eyebrow">Focus</p>
+          <h2 id="focus-title">Small systems, explicit interfaces, reusable notes.</h2>
+        </div>
+        <div class="focus-grid">
+          <article class="focus-card">
+            <span class="card-index">01</span>
+            <h3>AI systems</h3>
+            <p>
+              Efficient attention experiments, memory-aware model sketches, and
+              compact training loops that stay inspectable.
+            </p>
+          </article>
+          <article class="focus-card">
+            <span class="card-index">02</span>
+            <h3>Developer tools</h3>
+            <p>
+              LLM-assisted workflows, agent skills, and TypeScript utilities
+              designed for practical engineering work.
+            </p>
+          </article>
+          <article class="focus-card">
+            <span class="card-index">03</span>
+            <h3>Research code</h3>
+            <p>
+              Benchmark scaffolds, causal methods, and project notes that make
+              experiments easier to reproduce.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section work-section" id="work" aria-labelledby="work-title">
+        <div class="section-heading">
+          <p class="eyebrow">Selected Work</p>
+          <h2 id="work-title">Public projects with a clear technical signal.</h2>
+        </div>
+
+        <div class="work-grid">
+          <article class="project-card feature-project">
+            <div>
+              <p class="project-kicker">Python / Attention</p>
+              <h3>asam-attention</h3>
+              <p>
+                Adaptive Sparse Attention Module with Flash Attention, focused
+                on practical speedups for consumer GPUs.
+              </p>
             </div>
-            
-            <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
-                <form id="pr-form" class="space-y-6">
-                    <div>
-                        <label for="pr-repo-url" class="block text-gray-700 font-medium mb-2">GitHub项目URL</label>
-                        <input type="url" id="pr-repo-url" placeholder="例如：https://github.com/octocat/Hello-World" 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    
-                    <button type="submit" class="w-full bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition duration-300">
-                        分析项目并生成PR模板
-                    </button>
-                </form>
-                
-                <div id="pr-result" class="mt-8 hidden">
-                    <div class="border-t border-gray-200 pt-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">PR生成结果</h3>
-                        
-                        <div class="mb-6">
-                            <h4 class="text-lg font-medium text-gray-700 mb-2">找到的Good First Issue</h4>
-                            <div id="issues-list" class="space-y-4">
-                                <!-- Issues将在这里动态生成 -->
-                            </div>
-                        </div>
-                        
-                        <div class="mb-6">
-                            <h4 class="text-lg font-medium text-gray-700 mb-2">PR模板</h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <pre id="pr-template" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-6">
-                            <h4 class="text-lg font-medium text-gray-700 mb-2">贡献步骤</h4>
-                            <ol id="contribution-steps" class="list-decimal list-inside space-y-2 text-gray-600">
-                                <!-- 步骤将在这里动态生成 -->
-                            </ol>
-                        </div>
-                    </div>
-                </div>
+            <a href="https://github.com/li-guohao/asam-attention">View repo</a>
+          </article>
+
+          <article class="project-card">
+            <div>
+              <p class="project-kicker">Memory Systems</p>
+              <h3>MoBA-Memory-Phase-1</h3>
+              <p>
+                Mixture of Block Attention with differentiable external memory
+                management.
+              </p>
             </div>
-        </section>
+            <a href="https://github.com/li-guohao/MoBA-Memory-Phase-1">View repo</a>
+          </article>
+
+          <article class="project-card">
+            <div>
+              <p class="project-kicker">TypeScript / Tools</p>
+              <h3>engineering-intelligence-suite</h3>
+              <p>
+                A zero-runtime-dependency toolkit for technical debt analysis,
+                cost estimation, and incident workflow support.
+              </p>
+            </div>
+            <a href="https://github.com/li-guohao/engineering-intelligence-suite">View repo</a>
+          </article>
+
+          <article class="project-card">
+            <div>
+              <p class="project-kicker">Robotics / Benchmarking</p>
+              <h3>OpenRobotHarness</h3>
+              <p>
+                A landing repo for model, dataset, and benchmark work around
+                robot harness decisions.
+              </p>
+            </div>
+            <a href="https://github.com/li-guohao/OpenRobotHarness">View repo</a>
+          </article>
+
+          <article class="project-card">
+            <div>
+              <p class="project-kicker">Python / Methods</p>
+              <h3>causal-finance</h3>
+              <p>
+                Causal inference toolkit for financial analysis with Double
+                Machine Learning and instrumental variables.
+              </p>
+            </div>
+            <a href="https://github.com/li-guohao/causal-finance">View repo</a>
+          </article>
+
+          <article class="project-card">
+            <div>
+              <p class="project-kicker">AI Skills</p>
+              <h3>workplace-cookware-trio</h3>
+              <p>
+                Reusable AI skill packaging for workplace responsibility,
+                accountability, and negotiation workflows.
+              </p>
+            </div>
+            <a href="https://github.com/li-guohao/workplace-cookware-trio">View repo</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section notes-section" aria-labelledby="notes-title">
+        <div class="notes-panel">
+          <div>
+            <p class="eyebrow">Current Loop</p>
+            <h2 id="notes-title">Writing notes that make the next edit faster.</h2>
+          </div>
+          <ul class="notes-list">
+            <li>Keep experiments small enough to read and reuse.</li>
+            <li>Turn agent workflows into practical tools.</li>
+            <li>Document project context close to the code.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contact" aria-labelledby="contact-title">
+        <div>
+          <p class="eyebrow">Contact</p>
+          <h2 id="contact-title">For project context, start with GitHub.</h2>
+        </div>
+        <div class="contact-links">
+          <a href="https://github.com/li-guohao">github.com/li-guohao</a>
+          <a href="mailto:guohaoli2000@gmail.com">guohaoli2000@gmail.com</a>
+          <a href="https://www.linkedin.com/in/guohao-li">linkedin.com/in/guohao-li</a>
+        </div>
+      </section>
     </main>
 
-    <!-- 页脚 -->
-    <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-6 md:mb-0">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa fa-github text-2xl"></i>
-                        <span class="text-xl font-bold">GitHub项目探索助手</span>
-                    </div>
-                    <p class="mt-2 text-gray-400">从浏览项目到动手贡献的桥梁</p>
-                </div>
-                <div class="flex space-x-6">
-                    <a href="#scorer" class="text-gray-400 hover:text-white transition duration-300">项目难度评估</a>
-                    <a href="#discovery" class="text-gray-400 hover:text-white transition duration-300">项目发现</a>
-                    <a href="#pr-generator" class="text-gray-400 hover:text-white transition duration-300">PR生成器</a>
-                </div>
-            </div>
-            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
-                <p>© 2026 GitHub项目探索助手 | 托管在 GitHub Pages</p>
-            </div>
-        </div>
+    <footer class="site-footer">
+      <span>Guohao Li</span>
+      <span>Applied AI systems / developer tools / research code</span>
     </footer>
-
-    <script>
-        // 移动端菜单切换
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    // 关闭移动端菜单
-                    document.getElementById('mobile-menu').classList.add('hidden');
-                }
-            });
-        });
-
-        // 项目难度评估表单
-        document.getElementById('scorer-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const repoUrl = document.getElementById('repo-url').value;
-            
-            // 显示加载状态
-            const form = this;
-            const submitButton = form.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.textContent = '分析中...';
-            submitButton.disabled = true;
-            
-            try {
-                // 从URL中提取owner和repo
-                const urlMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-                if (!urlMatch) {
-                    alert('请输入有效的GitHub项目URL');
-                    return;
-                }
-                const owner = urlMatch[1];
-                const repo = urlMatch[2];
-                
-                // 调用GitHub API获取仓库信息
-                const repoResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
-                if (!repoResponse.ok) {
-                    throw new Error('无法获取仓库信息');
-                }
-                const repoData = await repoResponse.json();
-                
-                // 获取仓库的语言信息
-                const languagesResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/languages`);
-                const languagesData = await languagesResponse.json();
-                
-                // 计算难度评分
-                let difficultyScore = 0;
-                let difficultyLevel = '未知';
-                
-                // 基于多个因素计算难度
-                const starFactor = Math.min(repoData.stargazers_count / 1000, 10) * 3;
-                const forkFactor = Math.min(repoData.forks_count / 100, 10) * 2;
-                const sizeFactor = Math.min(repoData.size / 1000, 10) * 2;
-                const languageCount = Object.keys(languagesData).length;
-                const langFactor = Math.min(languageCount, 5) * 5;
-                
-                difficultyScore = Math.round(Math.min(starFactor + forkFactor + sizeFactor + langFactor, 100));
-                
-                if (difficultyScore < 30) {
-                    difficultyLevel = '简单';
-                } else if (difficultyScore < 70) {
-                    difficultyLevel = '中等';
-                } else {
-                    difficultyLevel = '困难';
-                }
-                
-                // 恢复按钮状态
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
-                
-                // 显示结果
-                document.getElementById('scorer-result').classList.remove('hidden');
-                
-                // 填充数据
-                document.getElementById('difficulty-score').textContent = difficultyScore;
-                document.getElementById('difficulty-level').textContent = difficultyLevel;
-                
-                // 技术栈
-                const techStack = document.getElementById('tech-stack');
-                techStack.innerHTML = '';
-                Object.keys(languagesData).forEach(lang => {
-                    const tag = document.createElement('span');
-                    tag.className = 'bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded';
-                    tag.textContent = lang;
-                    techStack.appendChild(tag);
-                });
-                
-                // 适合度（简单项目适合度更高）
-                const fitness = 100 - difficultyScore;
-                document.getElementById('fitness-bar').style.width = fitness + '%';
-                document.getElementById('fitness-percentage').textContent = fitness + '%';
-                
-                // 详细分析
-                const detailedAnalysis = document.getElementById('detailed-analysis');
-                detailedAnalysis.innerHTML = '';
-                [
-                    `星数：${repoData.stargazers_count.toLocaleString()}`,
-                    `Fork数：${repoData.forks_count.toLocaleString()}`,
-                    `代码大小：${(repoData.size / 1024).toFixed(2)} MB`,
-                    `语言数量：${languageCount}`,
-                    `最后更新：${new Date(repoData.updated_at).toLocaleDateString()}`,
-                    `开源协议：${repoData.license ? repoData.license.name : '未知'}`
-                ].forEach(item => {
-                    const p = document.createElement('p');
-                    p.textContent = item;
-                    detailedAnalysis.appendChild(p);
-                });
-                
-                // 建议
-                const recommendations = document.getElementById('recommendations');
-                recommendations.innerHTML = '';
-                const recommendationsList = difficultyScore < 30 ? [
-                    '这个项目看起来比较简单，适合新手开始',
-                    '可以尝试查看项目的issue，寻找good first issue标签',
-                    '先阅读项目的README和CONTRIBUTING文件',
-                    '从修复小bug或改进文档开始'
-                ] : difficultyScore < 70 ? [
-                    '这个项目难度适中，有一定挑战',
-                    '建议先熟悉项目的代码结构',
-                    '寻找一些标记为good first issue或help wanted的问题',
-                    '可以在项目的Discussions中提问'
-                ] : [
-                    '这个项目比较复杂，需要一定的经验',
-                    '建议先从理解项目的整体架构开始',
-                    '可以先贡献一些文档或测试',
-                    '多和项目维护者交流，了解贡献指南'
-                ];
-                
-                recommendationsList.forEach(item => {
-                    const p = document.createElement('p');
-                    p.textContent = item;
-                    recommendations.appendChild(p);
-                });
-                
-            } catch (error) {
-                alert('分析失败：' + error.message);
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
-            }
-        });
-
-        // 项目搜索
-        document.getElementById('search-projects').addEventListener('click', async function() {
-            const language = document.getElementById('language').value;
-            const difficulty = document.getElementById('difficulty').value;
-            
-            // 显示加载状态
-            const button = this;
-            const originalText = button.textContent;
-            button.textContent = '搜索中...';
-            button.disabled = true;
-            
-            try {
-                // 构建搜索查询
-                let query = 'stars:>100';
-                if (language !== 'all') {
-                    query += ` language:${language}`;
-                }
-                
-                // 根据难度添加条件
-                if (difficulty === 'easy') {
-                    query += ' stars:100..5000 size:<10000';
-                } else if (difficulty === 'medium') {
-                    query += ' stars:5000..50000';
-                } else if (difficulty === 'hard') {
-                    query += ' stars:>50000';
-                }
-                
-                query += ' sort:stars';
-                
-                // 调用GitHub API搜索仓库
-                const response = await fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&per_page=9`);
-                if (!response.ok) {
-                    throw new Error('搜索失败');
-                }
-                const data = await response.json();
-                
-                // 恢复按钮状态
-                button.textContent = originalText;
-                button.disabled = false;
-                
-                // 显示结果
-                const projectsContainer = document.getElementById('projects-container');
-                projectsContainer.innerHTML = '';
-                
-                if (data.items.length === 0) {
-                    projectsContainer.innerHTML = `
-                        <div class="col-span-full text-center py-12 text-gray-500">
-                            <i class="fa fa-search text-4xl mb-4"></i>
-                            <p>未找到匹配的项目，请尝试其他筛选条件</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // 生成项目卡片
-                data.items.forEach(repo => {
-                    // 估算难度
-                    let repoDifficulty = 'easy';
-                    if (repo.stargazers_count > 50000) {
-                        repoDifficulty = 'hard';
-                    } else if (repo.stargazers_count > 5000) {
-                        repoDifficulty = 'medium';
-                    }
-                    
-                    const card = document.createElement('div');
-                    card.className = 'bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm card-hover';
-                    card.innerHTML = `
-                        <div class="p-6">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-800 mb-1">${repo.name}</h3>
-                                    <p class="text-gray-500 text-sm">${repo.owner.login}</p>
-                                </div>
-                                <span class="bg-${repoDifficulty === 'easy' ? 'green' : repoDifficulty === 'medium' ? 'yellow' : 'red'}-100 text-${repoDifficulty === 'easy' ? 'green' : repoDifficulty === 'medium' ? 'yellow' : 'red'}-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                    ${repoDifficulty === 'easy' ? '简单' : repoDifficulty === 'medium' ? '中等' : '困难'}
-                                </span>
-                            </div>
-                            <p class="text-gray-600 mb-4">${repo.description || '暂无描述'}</p>
-                            <div class="flex items-center space-x-4 mb-4">
-                                <span class="flex items-center text-gray-500 text-sm">
-                                    <i class="fa fa-star mr-1"></i> ${repo.stargazers_count.toLocaleString()}
-                                </span>
-                                <span class="flex items-center text-gray-500 text-sm">
-                                    <i class="fa fa-code-fork mr-1"></i> ${repo.forks_count.toLocaleString()}
-                                </span>
-                                <span class="flex items-center text-gray-500 text-sm">
-                                    <i class="fa fa-code mr-1"></i> ${repo.language || '多种语言'}
-                                </span>
-                            </div>
-                            <div class="flex gap-2">
-                                <a href="${repo.html_url}" target="_blank" class="inline-flex items-center text-primary hover:text-primary/80 font-medium">
-                                    查看项目
-                                    <i class="fa fa-external-link ml-1"></i>
-                                </a>
-                                <a href="${repo.html_url}/contribute" target="_blank" class="inline-flex items-center text-gray-600 hover:text-gray-800 font-medium">
-                                    贡献
-                                    <i class="fa fa-hand-pointer-o ml-1"></i>
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                    projectsContainer.appendChild(card);
-                });
-                
-            } catch (error) {
-                alert('搜索失败：' + error.message);
-                button.textContent = originalText;
-                button.disabled = false;
-            }
-        });
-
-        // PR生成器表单
-        document.getElementById('pr-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const repoUrl = document.getElementById('pr-repo-url').value;
-            
-            // 显示加载状态
-            const form = this;
-            const submitButton = form.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.textContent = '分析中...';
-            submitButton.disabled = true;
-            
-            try {
-                // 从URL中提取owner和repo
-                const urlMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-                if (!urlMatch) {
-                    alert('请输入有效的GitHub项目URL');
-                    return;
-                }
-                const owner = urlMatch[1];
-                const repo = urlMatch[2];
-                
-                // 搜索good first issue
-                const issuesResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?labels=good%20first%20issue&state=open&per_page=5`);
-                if (!issuesResponse.ok) {
-                    throw new Error('无法获取issue信息');
-                }
-                const issuesData = await issuesResponse.json();
-                
-                // 恢复按钮状态
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
-                
-                // 显示结果
-                document.getElementById('pr-result').classList.remove('hidden');
-                
-                // 填充issues
-                const issuesList = document.getElementById('issues-list');
-                issuesList.innerHTML = '';
-                
-                if (issuesData.length === 0) {
-                    issuesList.innerHTML = `
-                        <div class="text-center py-6 text-gray-500">
-                            <i class="fa fa-info-circle text-2xl mb-2"></i>
-                            <p>该项目暂无标记为good first issue的开放issue</p>
-                            <p class="text-sm mt-2">你可以查看其他标签的issue，或先了解项目文档</p>
-                        </div>
-                    `;
-                } else {
-                    issuesData.forEach(issue => {
-                        const issueElement = document.createElement('div');
-                        issueElement.className = 'bg-gray-50 p-4 rounded-lg';
-                        issueElement.innerHTML = `
-                            <h5 class="font-medium text-gray-800">${issue.title}</h5>
-                            <p class="text-gray-500 text-sm mt-1">Issue #${issue.number} · ${new Date(issue.created_at).toLocaleDateString()}</p>
-                            <p class="text-gray-600 text-sm mt-2">${issue.body ? issue.body.substring(0, 150) + '...' : '暂无描述'}</p>
-                            <a href="${issue.html_url}" target="_blank" class="text-primary text-sm mt-2 inline-block">查看详情</a>
-                        `;
-                        issuesList.appendChild(issueElement);
-                    });
-                }
-                
-                // PR模板
-                const sampleIssue = issuesData[0] || { title: 'Fix a bug or add a feature', number: '1' };
-                document.getElementById('pr-template').textContent = `# ${sampleIssue.title ? 'Fix: ' + sampleIssue.title : 'Fix or Feature'}
-
-## Description
-
-This PR addresses issue #${sampleIssue.number} by ${sampleIssue.title ? sampleIssue.title.toLowerCase() : 'implementing the desired functionality'}.
-
-## Changes Made
-
-- [Describe the main changes you made]
-- [List key files modified]
-- [Explain the approach taken]
-
-## Checklist
-
-- [ ] I've read the contributing guidelines
-- [ ] I've tested the changes
-- [ ] I've added documentation if needed
-- [ ] All existing tests pass
-
-## Related Issues
-
-${sampleIssue.number !== '1' ? `- Closes #${sampleIssue.number}` : '- [Link to related issue]'}`;
-                
-                // 贡献步骤
-                const contributionSteps = document.getElementById('contribution-steps');
-                contributionSteps.innerHTML = '';
-                [
-                    `Fork the repository: https://github.com/${owner}/${repo}/fork`,
-                    'Clone your fork to your local machine',
-                    'Create a new branch for your changes',
-                    'Make the necessary changes to fix the issue',
-                    'Commit your changes with a descriptive commit message',
-                    'Push your changes to your fork',
-                    `Create a pull request from your fork to ${owner}/${repo}`,
-                    'Wait for the maintainers to review your PR'
-                ].forEach(step => {
-                    const li = document.createElement('li');
-                    li.textContent = step;
-                    contributionSteps.appendChild(li);
-                });
-                
-            } catch (error) {
-                alert('分析失败：' + error.message);
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
-            }
-        });
-    </script>
-</body>
+  </body>
 </html>
