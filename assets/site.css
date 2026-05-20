@@ -360,13 +360,27 @@ h1 {
   align-items: center;
   justify-content: center;
   padding: 0;
+  filter: drop-shadow(0 0 14px rgba(183, 255, 90, 0.42));
+}
+
+.signal-svg {
+  display: block;
+  width: auto;
+  height: clamp(86px, 9vw, 132px);
+  overflow: visible;
+  color: var(--green);
+}
+
+.signal-svg text {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   font-family: "Bricolage Grotesque", Georgia, serif;
-  font-size: clamp(3rem, 7.4vw, 7.8rem);
+  font-size: 92px;
   font-weight: 800;
-  line-height: 0.82;
-  white-space: nowrap;
-  text-align: center;
-  text-shadow: 0 0 26px rgba(183, 255, 90, 0.32);
+  paint-order: stroke;
 }
 
 @keyframes signal-marquee {
@@ -590,7 +604,10 @@ h1 {
 
   .signal-item {
     min-height: 88px;
-    font-size: clamp(2.45rem, 15vw, 5.4rem);
+  }
+
+  .signal-svg {
+    height: clamp(72px, 21vw, 96px);
   }
 
   .focus-card,
