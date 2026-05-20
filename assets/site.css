@@ -319,7 +319,7 @@ h1 {
 .signal-band {
   position: relative;
   overflow: hidden;
-  border-block: 1px solid rgba(183, 255, 90, 0.42);
+  border-block: 1px solid rgba(183, 255, 90, 0.36);
   background:
     linear-gradient(90deg, rgba(183, 255, 90, 0.14), transparent 24%),
     linear-gradient(270deg, rgba(86, 216, 216, 0.1), transparent 24%),
@@ -337,7 +337,9 @@ h1 {
 .signal-track {
   display: flex;
   width: max-content;
-  animation: signal-marquee 26s linear infinite;
+  transform: translate3d(-33.333%, 0, 0);
+  animation: signal-marquee 34s linear infinite;
+  will-change: transform;
 }
 
 .signal-band:hover .signal-track {
@@ -347,29 +349,33 @@ h1 {
 .signal-group {
   display: flex;
   flex: 0 0 auto;
+  gap: clamp(42px, 7vw, 118px);
+  padding-right: clamp(42px, 7vw, 118px);
 }
 
 .signal-item {
-  min-height: 72px;
-  min-width: clamp(220px, 25vw, 340px);
+  min-height: clamp(96px, 10vw, 144px);
+  min-width: max-content;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  border-right: 1px solid rgba(183, 255, 90, 0.24);
-  font-weight: 700;
+  padding: 0;
+  font-family: "Bricolage Grotesque", Georgia, serif;
+  font-size: clamp(3rem, 7.4vw, 7.8rem);
+  font-weight: 800;
+  line-height: 0.82;
   white-space: nowrap;
   text-align: center;
-  text-shadow: 0 0 18px rgba(183, 255, 90, 0.3);
+  text-shadow: 0 0 26px rgba(183, 255, 90, 0.32);
 }
 
 @keyframes signal-marquee {
   from {
-    transform: translateX(0);
+    transform: translate3d(-33.333%, 0, 0);
   }
 
   to {
-    transform: translateX(-50%);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -583,8 +589,8 @@ h1 {
   }
 
   .signal-item {
-    min-height: 58px;
-    min-width: 220px;
+    min-height: 88px;
+    font-size: clamp(2.45rem, 15vw, 5.4rem);
   }
 
   .focus-card,
