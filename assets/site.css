@@ -238,7 +238,8 @@ h1 {
 .project-card a:focus-visible,
 .contact-links a:focus-visible,
 .brand:focus-visible,
-.eyebrow a:focus-visible {
+.eyebrow a:focus-visible,
+.founder-plate a:focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 4px;
 }
@@ -295,25 +296,92 @@ h1 {
   filter: grayscale(16%) contrast(1.05);
 }
 
-.terminal-card {
+.profile-card {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   padding: 18px;
   border: 1px solid var(--line);
-  background: #090a08;
+  background:
+    linear-gradient(135deg, rgba(183, 255, 90, 0.11), transparent 48%),
+    linear-gradient(315deg, rgba(86, 216, 216, 0.08), transparent 42%),
+    #0b0e09;
   color: var(--paper);
   font-size: 0.86rem;
   line-height: 1.5;
 }
 
-.terminal-card p {
-  margin: 0;
+.founder-plate {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid rgba(183, 255, 90, 0.28);
+  background:
+    linear-gradient(90deg, rgba(183, 255, 90, 0.18), transparent),
+    rgba(5, 8, 5, 0.72);
 }
 
-.terminal-card span {
-  display: block;
-  margin-bottom: 3px;
+.founder-plate span {
   color: var(--cyan);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.founder-plate a {
+  width: fit-content;
+  color: var(--green);
+  font-family: "Bricolage Grotesque", Georgia, serif;
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-weight: 700;
+  line-height: 0.95;
+  text-shadow: 0 0 20px rgba(183, 255, 90, 0.26);
+}
+
+.founder-plate a::before {
+  content: "@ ";
+  color: var(--paper);
+  opacity: 0.72;
+}
+
+.profile-nameplate {
+  display: grid;
+  gap: 6px;
+  padding: 16px 0 4px;
+  border-bottom: 1px solid rgba(244, 240, 230, 0.12);
+}
+
+.profile-nameplate span,
+.profile-detail-grid span {
+  color: var(--cyan);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.profile-nameplate strong {
+  color: var(--paper);
+  font-family: "Bricolage Grotesque", Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-weight: 700;
+  line-height: 0.95;
+}
+
+.profile-detail-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.profile-detail-grid p {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.profile-detail-grid p + p {
+  border-top: 1px solid rgba(244, 240, 230, 0.1);
 }
 
 .signal-band {
